@@ -490,6 +490,9 @@ class PlPlayerController with BlockConfigMixin, AudioNormalizationMixin {
 
   num get sliderScale => isRelative ? durationInMilliseconds * offset : offset;
 
+  /// slide duration `0` disables seeking by horizontal swipe
+  bool get enableSlideSeek => offset != 0;
+
   // 播放顺序相关
   late PlayRepeat playRepeat = Pref.playRepeat;
 

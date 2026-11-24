@@ -281,6 +281,7 @@ SettingsModel getVideoFilterSelectModel({
   bool isFilter = true,
   String? filterScope,
   ValueChanged<int>? onChanged,
+  String? zeroLabel,
 }) {
   assert(!isFilter || onChanged != null);
   int value = GStorage.setting.get(key, defaultValue: defaultValue);
@@ -310,7 +311,16 @@ SettingsModel getVideoFilterSelectModel({
               (values
                     ..addIf(!values.contains(value), value)
                     ..sort())
-                  .map((e) => (e, suffix == null ? e.toString() : '$e $suffix'))
+                  .map(
+                    (e) => (
+                      e,
+                      e == 0 && zeroLabel != null
+                          ? zeroLabel
+                          : suffix == null
+                          ? e.toString()
+                          : '$e $suffix',
+                    ),
+                  )
                   .toList()
                 ..add((-1, '自定义')),
         ),

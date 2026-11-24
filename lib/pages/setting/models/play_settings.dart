@@ -249,10 +249,11 @@ List<SettingsModel> get playSettings => [
   ),
   getVideoFilterSelectModel(
     title: '滑动快进/快退时长',
-    subtitle: '从播放器一端滑到另一端的快进/快退时长',
+    subtitle: '从播放器一端滑到另一端的快进/快退时长，0 为关闭滑动快进/快退',
     suffix: Pref.useRelativeSlide ? '%' : 's',
     key: SettingBoxKey.sliderDuration,
-    values: [25, 50, 90, 100],
+    values: [0, 25, 50, 90, 100],
+    zeroLabel: '关闭',
     defaultValue: 90,
     isFilter: false,
   ),
