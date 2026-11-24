@@ -1,9 +1,7 @@
 import 'package:PiliPlus/common/widgets/appbar/appbar.dart';
 import 'package:PiliPlus/common/widgets/flutter/pop_scope.dart';
-import 'package:PiliPlus/common/widgets/gesture/horizontal_drag_gesture_recognizer.dart';
 import 'package:PiliPlus/common/widgets/scaffold/simple_scaffold.dart';
-import 'package:PiliPlus/common/widgets/scroll_physics.dart'
-    show tabBarScrollPhysics;
+import 'package:PiliPlus/common/widgets/scroll_physics.dart' show tabBarView;
 import 'package:PiliPlus/common/widgets/view_safe_area.dart';
 import 'package:PiliPlus/models/common/later_view_type.dart';
 import 'package:PiliPlus/models_new/later/list.dart';
@@ -132,13 +130,11 @@ class _LaterPageState extends State<LaterPage>
                     },
                   ),
                   Expanded(
-                    child: TabBarView(
+                    child: tabBarView(
                       physics: enableMultiSelect
                           ? const NeverScrollableScrollPhysics()
-                          : tabBarScrollPhysics,
+                          : null,
                       controller: _tabController,
-                      horizontalDragGestureRecognizer:
-                          CustomHorizontalDragGestureRecognizer.new,
                       children: LaterViewType.values
                           .map((item) => item.page)
                           .toList(),

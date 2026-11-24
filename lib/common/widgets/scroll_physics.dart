@@ -6,14 +6,54 @@ import 'package:material_ui/material_ui.dart';
 Widget tabBarView({
   required List<Widget> children,
   TabController? controller,
+  ScrollPhysics? physics,
   HitTestBehavior hitTestBehavior = .opaque,
-}) => TabBarView(
+}) => _TabBarView(
   controller: controller,
-  physics: tabBarScrollPhysics,
+  physics: physics ?? tabBarScrollPhysics,
   hitTestBehavior: hitTestBehavior,
-  horizontalDragGestureRecognizer: CustomHorizontalDragGestureRecognizer.new,
   children: children,
 );
+
+class _TabBarView extends StatelessWidget {
+  const _TabBarView({
+    required this.controller,
+    required this.physics,
+    required this.hitTestBehavior,
+    required this.children,
+  });
+
+  final TabController? controller;
+  final ScrollPhysics physics;
+  final HitTestBehavior hitTestBehavior;
+  final List<Widget> children;
+
+  /// The drag recognizer outlives rebuilds while the tab controller may be
+  /// replaced, so look it up from the current widget each time.
+  static bool _isAtStart(BuildContext context) {
+    if (!context.mounted) return false;
+    final controller =
+        (context.widget as _TabBarView).controller ??
+        DefaultTabController.maybeOf(context);
+    return controller != null &&
+        controller.index == 0 &&
+        controller.offset <= 0;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TabBarView(
+      controller: controller,
+      physics: physics,
+      hitTestBehavior: hitTestBehavior,
+      horizontalDragGestureRecognizer: () =>
+          CustomHorizontalDragGestureRecognizer(
+            isAtStart: () => _isAtStart(context),
+          ),
+      children: children,
+    );
+  }
+}
 
 SpringDescription kSpringDescription = _customSpringDescription();
 

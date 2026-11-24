@@ -1,5 +1,6 @@
+import 'package:PiliPlus/common/widgets/gesture/trackpad_back_gesture.dart';
 import 'package:PiliPlus/utils/storage_pref.dart';
-import 'package:flutter/foundation.dart' show PlatformDispatcher;
+import 'package:flutter/foundation.dart' show PlatformDispatcher, ValueGetter;
 import 'package:flutter/gestures.dart'
     show
         Offset,
@@ -36,7 +37,12 @@ class CustomHorizontalDragGestureRecognizer
     super.debugOwner,
     super.supportedDevices,
     super.allowedButtonsFilter,
+    this.isAtStart,
   });
+
+  /// Whether the scrollable is at its start, e.g. on the first tab. A
+  /// rightward trackpad pan there is left to [TrackpadBackGesture].
+  final ValueGetter<bool>? isAtStart;
 
   @override
   DeviceGestureSettings get gestureSettings => _gestureSettings;
@@ -47,6 +53,12 @@ class CustomHorizontalDragGestureRecognizer
     PointerDeviceKind pointerDeviceKind,
     double? deviceTouchSlop,
   ) {
+    if (pointerDeviceKind == .trackpad &&
+        globalDistanceMoved > 0 &&
+        TrackpadBackGesture.enabled &&
+        (isAtStart?.call() ?? false)) {
+      return false;
+    }
     return _computeHitSlop(
       globalDistanceMoved.abs(),
       gestureSettings,

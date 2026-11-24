@@ -4,6 +4,7 @@ import 'package:PiliPlus/build_config.dart';
 import 'package:PiliPlus/common/constants.dart';
 import 'package:PiliPlus/common/widgets/back_detector.dart';
 import 'package:PiliPlus/common/widgets/custom_toast.dart';
+import 'package:PiliPlus/common/widgets/gesture/trackpad_back_gesture.dart';
 import 'package:PiliPlus/common/widgets/route_aware_mixin.dart';
 import 'package:PiliPlus/common/widgets/scale_app.dart';
 import 'package:PiliPlus/common/widgets/scroll_behavior.dart';
@@ -120,6 +121,7 @@ void main() async {
       if (Pref.horizontalScreen) ?fullMode() else ?portraitUpMode(),
       setupServiceLocator(),
       if (Platform.isIOS) IOSPipHelper.init(),
+      if (Platform.isIOS) TrackpadBackGesture.init(),
     ]);
   } else if (Platform.isWindows) {
     if (await WebViewEnvironment.getAvailableVersion() != null) {
@@ -348,6 +350,9 @@ class MyApp extends StatelessWidget {
         ),
         child: child!,
       );
+    }
+    if (TrackpadBackGesture.enabled) {
+      return TrackpadBackGesture(onBack: _onBack, child: child);
     }
     if (PlatformUtils.isDesktop) {
       return BackDetector(

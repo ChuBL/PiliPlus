@@ -12,6 +12,7 @@ import 'package:PiliPlus/common/widgets/disabled_icon.dart';
 import 'package:PiliPlus/common/widgets/gesture/immediate_tap_gesture_recognizer.dart';
 import 'package:PiliPlus/common/widgets/gesture/mouse_interactive_viewer.dart';
 import 'package:PiliPlus/common/widgets/gesture/player_gesture_recognizer.dart';
+import 'package:PiliPlus/common/widgets/gesture/trackpad_back_gesture.dart';
 import 'package:PiliPlus/common/widgets/loading_widget.dart';
 import 'package:PiliPlus/common/widgets/pair.dart';
 import 'package:PiliPlus/common/widgets/player_bar.dart';
@@ -1987,7 +1988,23 @@ class _PLVideoPlayerState extends State<PLVideoPlayer>
         ),
       );
     }
+    if (TrackpadBackGesture.enabled) {
+      return Listener(
+        onPointerPanZoomStart: _onPointerPanZoomStart,
+        child: child,
+      );
+    }
     return child;
+  }
+
+  /// Keep the trackpad back gesture off the player while a horizontal
+  /// trackpad pan does something here (seeking), and in fullscreen.
+  void _onPointerPanZoomStart(PointerPanZoomStartEvent event) {
+    if (isFullScreen ||
+        plPlayerController.controlsLock.value ||
+        (!plPlayerController.isLive && plPlayerController.enableSlideSeek)) {
+      TrackpadBackGesture.block(event);
+    }
   }
 
   Widget get _videoWidget {
